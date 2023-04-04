@@ -2,22 +2,37 @@ import { useState } from 'react';
 
 function App() {
   const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const onSubmit = () => {
+    console.log(title, body);
+  };
 
   return (
     <div className="container">
       <div className="mb-3">
-        <label className="form-label">Title</label>
-        <input
-          className="form-control"
-          value={title}
-          onChange={(event)=> {
-            setTitle(event.target.value);
-          }}
-        />
-        <button className="btn btn-primary">
-          Post
-        </button>
+      <label className="form-label">Title</label>
+      <input
+        className="form-control"
+        value={title}
+        onChange={(event)=> {
+          setTitle(event.target.value);
+        }}
+      />
       </div>
+      <div className="mb-3">
+        <label className="form-label">Body</label>
+        <textarea
+          className="form-control"
+          value={body}
+          onChange={(event) => {
+            setBody(event.target.value);
+          }}
+          rows="20"
+        />
+      </div>
+      <button className="btn btn-primary" onClick={onSubmit}>
+        Post
+      </button>
     </div>
   );
 }
