@@ -6,12 +6,20 @@ import { useHistory } from 'react-router';
 
 const ListPage = () => {
   const history = useHistory();
-  // 1.변수에 useHistory hooks를 담는다고 말함.
   const [posts, setPosts] = useState([]);
+
   const getPosts = () => {
     axios.get('http://localhost:3001/posts').then((res) => {
       setPosts(res.data);
     })
+  }
+
+  const deleteBlog = (e, id) => {
+    e.stopPropagation();
+    console.log('delete blog');
+    axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
+      setPosts(prevPosts => prevPosts.filter(post =>  post.id !== id));
+    });
   }
 
   useEffect(() => {
@@ -33,8 +41,16 @@ const ListPage = () => {
           <Card
             key={post.id}
             title={post.title}
-            onClick={() => history.push('/blogs/edit')} />
-        //  2.이렇게 해주면 카드를 클릭하면 페이지 이동 쌉가능.
+            onClick={() => history.push('/blogs/edit')}>
+            <div>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={(e) => deleteBlog(e, post.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </Card>
         )
       })}
     </div>
