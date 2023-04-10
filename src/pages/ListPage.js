@@ -3,20 +3,24 @@ import { useState, useEffect } from 'react';
 import Card from '../components/Card';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ListPage = () => {
   const history = useHistory();
   const [posts, setPosts] = useState([]);
+  // 1. 처음엔 loading이 true였다가 false로 바뀌게끔 할 것임.
+  const [loading, setLoading] = useState(true);
 
   const getPosts = () => {
     axios.get('http://localhost:3001/posts').then((res) => {
       setPosts(res.data);
+      // 2. 데이터 받아오면 loading false로로
+      setLoading(false);
     })
   }
 
   const deleteBlog = (e, id) => {
     e.stopPropagation();
-    console.log('delete blog');
     axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
       setPosts(prevPosts => prevPosts.filter(post =>  post.id !== id));
     });
@@ -25,6 +29,36 @@ const ListPage = () => {
   useEffect(() => {
     getPosts();
   }, []);
+
+  const renderBlogList = () => {
+    if (loading) {
+      return (
+        <LoadingSpinner />
+      )
+    }
+
+    if (posts.length === 0) {
+      return (<div>No blog posts found</div>)
+    }
+
+    return posts.map(post => {
+      return (
+        <Card
+          key={post.id}
+          title={post.title}
+          onClick={() => history.push('/blogs/edit')}>
+          <div>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={(e) => deleteBlog(e, post.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </Card>
+      )
+    })
+  }
 
   return (
     <div>
@@ -36,23 +70,7 @@ const ListPage = () => {
           </Link>
         </div>
       </div>
-      {posts.map(post => {
-        return (
-          <Card
-            key={post.id}
-            title={post.title}
-            onClick={() => history.push('/blogs/edit')}>
-            <div>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={(e) => deleteBlog(e, post.id)}
-              >
-                Delete
-              </button>
-            </div>
-          </Card>
-        )
-      })}
+      {renderBlogList()}
     </div>
   );
 };
