@@ -14,7 +14,7 @@ const ListPage = () => {
   const getPosts = () => {
     axios.get('http://localhost:3001/posts').then((res) => {
       setPosts(res.data);
-      // 2. 데이터 받아오면 loading false로로
+      // 2. 데이터 받아오면 loading false로
       setLoading(false);
     })
   }
@@ -46,7 +46,7 @@ const ListPage = () => {
         <Card
           key={post.id}
           title={post.title}
-          onClick={() => history.push('/blogs/edit')}>
+          onClick={() => history.push(`/blogs/${post.id}`)}>
           <div>
             <button
               className="btn btn-danger btn-sm"

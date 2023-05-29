@@ -10,7 +10,8 @@ const BlogForm = () => {
   const onSubmit = () => {
     axios.post('http://localhost:3001/posts', {
       title,
-      body
+      body,
+      createdAt: Date.now() // 현재 시간 가져오기
     }).then(() => {
       history.push('/blogs');
     })
