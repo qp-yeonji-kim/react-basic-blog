@@ -7,7 +7,7 @@ const Card = ({ title, children, onClick }) => {
       onClick={onClick}
     >
       <div className="card-body py-2 d-flex align-items-center">
-        <div class="flex-grow-1">{title}</div>
+        <div className="flex-grow-1">{title}</div>
         {children && <div>{children}</div>}
       </div>
     </div>

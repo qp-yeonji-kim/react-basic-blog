@@ -5,6 +5,27 @@
       "body": "ㅁㄴㅇㄹㅁㄴㅇㄹ",
       "createdAt": 1685364580198,
       "id": 3
+    },
+    {
+      "title": "테스트1",
+      "body": "테스트1",
+      "createdAt": 1694153185985,
+      "publish": true,
+      "id": 4
+    },
+    {
+      "title": "테스트2",
+      "body": "테스트2",
+      "createdAt": 1694153194265,
+      "publish": false,
+      "id": 5
+    },
+    {
+      "title": "1",
+      "body": "11111",
+      "createdAt": 1694153646097,
+      "publish": false,
+      "id": 6
     }
   ]
 }
