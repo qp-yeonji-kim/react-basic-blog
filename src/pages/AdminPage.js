@@ -1,20 +1,20 @@
-import { Link } from 'react-router-dom';
-import BlogList from '../components/BlogList';
+import BlogList from "../components/BlogList";
+import classnames from "classnames";
 
-const ListPage = () => {
+const AdminPage = () => {
   return (
     <div>
       <div className="d-flex justify-content-between">
-        <h1>Blogs</h1>
+        <h1>Admin</h1>
         <div>
           <Link to="/blogs/create" className="btn btn-success">
             Create New
           </Link>
         </div>
       </div>
-      <BlogList />
+      <BlogList isAdmin={true} />
     </div>
   );
 };
 
-export default ListPage;
+export default AdminPage;
