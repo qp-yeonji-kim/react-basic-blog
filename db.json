@@ -40,6 +40,13 @@
       "createdAt": 1694159599605,
       "publish": false,
       "id": 8
+    },
+    {
+      "title": "test2",
+      "body": "text2",
+      "createdAt": 1694403925630,
+      "publish": true,
+      "id": 9
     }
   ]
 }

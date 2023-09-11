@@ -1,41 +1,57 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import { useLocation } from 'react-router-dom';
+import { bool } from "prop-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Card from '../components/Card';
 import Pagination from "./Pagination";
-import { bool } from "prop-types";
 
 const BlogList = ({ isAdmin }) => {
+  // const location = useLocation(); // 1. 이 코드를 통해 다음을 얻을 수 있다.
+  // console.log(location.search) // ?page=2
+  // const params = new URLSearchParams(location.search); // 2. 이 코드를 통해서 url 뒤의 숫자만 빼올 수 있다.
+  // console.log(params.get('page')); // 2
   const history = useHistory();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const pageParam = params.get('page');
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
-  const [currentPage, setCurrentPage] = useState([1]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numberOfPosts, setNumberOfPosts] = useState(0);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const limit = 5;
+
+  useEffect(() => {
+    setNumberOfPages(Math.ceil(numberOfPosts / limit)) ;
+  }, [numberOfPosts])
 
   const getPosts = (page = 1) => {
-    setCurrentPage(page);
-    // 2. 쿼리스트링이 길어지면 params에 담아 쓸 수 있다.
     let params = {
       _page: page,
-      _limit: 5,
+      _limit: limit,
       _sort: 'id',
       _order: 'desc',
-      // publish: true, // publish 변수에 대해 필터링한 데이터를 프론트에서 처리하면 sort가 잘 안된다. 그래서 백엔드에서 처리하는게 나음.
     }
 
     if (!isAdmin) {
       params = { ...params, publish: true}
     }
 
-    // 1. posts 뒤에 쿼리스트링을 붙여 데이터 가져오는 조건을 설정한다.
-    // axios.get(`http://localhost:3001/posts?_page=${page}&_limit=5&_sort=id&_order=desc`, {
     axios.get(`http://localhost:3001/posts`, {
       params
     }).then((res) => {
+      setNumberOfPosts(res.headers['x-total-count']);
       setPosts(res.data);
       setLoading(false);
     })
   }
+
+  useEffect(() => {
+    setCurrentPage(parseInt(pageParam) || 1); // ||: parseInt(pageParam)값이 없으면 1을 넣어줌.
+    getPosts(parseInt(pageParam) || 1); // string으로 pageParam값이 오기 때문에 처리해줘야 함.
+  }, [pageParam])
 
   const deleteBlog = (e, id) => {
     e.stopPropagation();
@@ -44,9 +60,9 @@ const BlogList = ({ isAdmin }) => {
     });
   }
 
-  useEffect(() => {
-    getPosts();
-  }, []);
+  const onClickPageButton = (page) => {
+    history.push(`${location.pathname}?page=${page}`); // 이전 url 기록이 남게 됨.
+  }
 
   if (loading) {
     return (
@@ -89,7 +105,11 @@ const BlogList = ({ isAdmin }) => {
   return (
     <div>
       {renderBlogList()}
-      <Pagination currentPage={currentPage} numberOfPages={5} onClick={getPosts} />
+      {
+        numberOfPages > 1 && (
+          <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={onClickPageButton} />
+        )
+      }
     </div>
   )
 };
