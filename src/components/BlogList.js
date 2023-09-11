@@ -10,8 +10,10 @@ const BlogList = ({ isAdmin }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [currentPage, setCurrentPage] = useState([1]);
 
   const getPosts = (page = 1) => {
+    setCurrentPage(page);
     // 2. 쿼리스트링이 길어지면 params에 담아 쓸 수 있다.
     let params = {
       _page: page,
@@ -27,7 +29,7 @@ const BlogList = ({ isAdmin }) => {
 
     // 1. posts 뒤에 쿼리스트링을 붙여 데이터 가져오는 조건을 설정한다.
     // axios.get(`http://localhost:3001/posts?_page=${page}&_limit=5&_sort=id&_order=desc`, {
-    axios.get(`http://localhost:3001/posts?_page=${page}&_limit=5&_sort=id&_order=desc`, {
+    axios.get(`http://localhost:3001/posts`, {
       params
     }).then((res) => {
       setPosts(res.data);
@@ -87,7 +89,7 @@ const BlogList = ({ isAdmin }) => {
   return (
     <div>
       {renderBlogList()}
-      <Pagination currentPage={2} numberOfPages={5}/>
+      <Pagination currentPage={currentPage} numberOfPages={5} onClick={getPosts} />
     </div>
   )
 };
