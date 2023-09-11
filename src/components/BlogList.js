@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { bool } from "prop-types";
@@ -27,7 +27,10 @@ const BlogList = ({ isAdmin }) => {
     setNumberOfPages(Math.ceil(numberOfPosts / limit)) ;
   }, [numberOfPosts])
 
-  const getPosts = (page = 1) => {
+  const getPosts = useCallback((page = 1) => { 
+    // getPosts의 값이 바뀔 때 useEffect가 실행되게끔 수정하면.. 
+    // 문제는 새롭게 렌더링 될 때마다 getPosts라는 함수가 재생성된다 (똑같은데 계속 재생성됨)
+    // 함수를 기억하게끔 useCallback을 사용하면 [isAdmin]의 값이 바뀔 때만 함수가 재랜더링된다.
     let params = {
       _page: page,
       _limit: limit,
@@ -46,7 +49,7 @@ const BlogList = ({ isAdmin }) => {
       setPosts(res.data);
       setLoading(false);
     })
-  }
+  }, [isAdmin])
 
   useEffect(() => {
     setCurrentPage(parseInt(pageParam) || 1); // ||: parseInt(pageParam)값이 없으면 1을 넣어줌.
