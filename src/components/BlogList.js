@@ -2,10 +2,10 @@ import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { bool } from "prop-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Card from '../components/Card';
 import Pagination from "./Pagination";
+import propTypes from 'prop-types';
 
 const BlogList = ({ isAdmin }) => {
   // const location = useLocation(); // 1. 이 코드를 통해 다음을 얻을 수 있다.
@@ -21,6 +21,7 @@ const BlogList = ({ isAdmin }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [numberOfPosts, setNumberOfPosts] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
+  const [searchText, setSearchText] = useState('');
   const limit = 5;
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const BlogList = ({ isAdmin }) => {
       _limit: limit,
       _sort: 'id',
       _order: 'desc',
+      title_like: searchText // _like를 뒤에 붙여주면 찾고자하는 단어의 일부분만 일치해도 검색이 된다.
     }
 
     if (!isAdmin) {
@@ -49,12 +51,12 @@ const BlogList = ({ isAdmin }) => {
       setPosts(res.data);
       setLoading(false);
     })
-  }, [isAdmin])
+  }, [isAdmin, searchText])
 
   useEffect(() => {
     setCurrentPage(parseInt(pageParam) || 1); // ||: parseInt(pageParam)값이 없으면 1을 넣어줌.
     getPosts(parseInt(pageParam) || 1); // string으로 pageParam값이 오기 때문에 처리해줘야 함.
-  }, [pageParam])
+  }, []) // pageParam이 바뀔 때다 실행되면 dependency가 잘 작동하지 않는다고 함.
 
   const deleteBlog = (e, id) => {
     e.stopPropagation();
@@ -65,16 +67,14 @@ const BlogList = ({ isAdmin }) => {
 
   const onClickPageButton = (page) => {
     history.push(`${location.pathname}?page=${page}`); // 이전 url 기록이 남게 됨.
+    setCurrentPage();
+    getPosts(page);
   }
 
   if (loading) {
     return (
       <LoadingSpinner/>
     )
-  }
-
-  if (posts.length === 0) {
-    return (<div>No blog posts found</div>)
   }
 
   const renderBlogList = () => {
@@ -105,20 +105,41 @@ const BlogList = ({ isAdmin }) => {
       })
     }
 
+  const onSearch = (e) => {
+    if (e.key === 'Enter') {
+      history.push(`${location.pathname}?page=1`); 
+      setCurrentPage(1);
+      getPosts(1);
+    }
+  }
+
   return (
     <div>
-      {renderBlogList()}
-      {
-        numberOfPages > 1 && (
-          <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={onClickPageButton} />
-        )
-      }
+      <input
+        type="text"
+        placeholder="Search.."
+        value={searchText}
+        className="form-control"
+        onChange={(e) => setSearchText(e.target.value)}
+        onKeyUp={onSearch}
+      />
+      <hr />
+      {posts.length === 0 ? <div>No blog posts found</div> : (
+        <>
+          {renderBlogList()}
+          {
+            numberOfPages > 1 && (
+              <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={onClickPageButton} />
+            )
+          }
+        </>
+      )}
     </div>
   )
 };
 
 BlogList.propTypes = {
-  isAdmin: bool
+  isAdmin: propTypes.bool
 };
 
 BlogList.defaultProps = {
