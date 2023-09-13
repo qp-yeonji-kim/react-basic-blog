@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import propTypes from 'prop-types';
+import classNames from "classnames";
 
 const BlogForm = ({ editing }) => {
   const history = useHistory();
@@ -13,6 +14,8 @@ const BlogForm = ({ editing }) => {
   const [originalBody, setOriginalBody] = useState("");
   const [publish, setPublish] = useState(false);
   const [originalPublish, setOriginalPublish] = useState(false);
+  const [titleError, setTitleError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
 
   useEffect(() => {
     if (editing) {
@@ -46,29 +49,46 @@ const BlogForm = ({ editing }) => {
     setPublish(e.target.checked)
   }
 
+  const validateForm = () => {
+    let validated = true;
+    if (title === '') {
+      setTitleError(true)
+      validated = false;
+    }
+    if (body === '') {
+      setBodyError(true)
+      validated = false;
+    }
+    return validated;
+  }
+
   const onSubmit = () => {
-    if (editing) {
-      axios
-        .patch(`http://localhost:3001/posts/${id}`, {
-          title,
-          body,
-          publish
-        })
-        .then((res) => {
-          console.log(res);
-          history.push(`/blogs/${id}`);
-        });
-    } else {
-      axios
-        .post("http://localhost:3001/posts", {
-          title,
-          body,
-          createdAt: Date.now(), // 현재 시간 가져오기
-          publish
-        })
-        .then(() => {
-          history.push("/admin");
-        });
+    setTitleError(false);
+    setBodyError(false);
+    if (validateForm()) {
+      if (editing) {
+        axios
+          .patch(`http://localhost:3001/posts/${id}`, {
+            title,
+            body,
+            publish
+          })
+          .then((res) => {
+            console.log(res);
+            history.push(`/blogs/${id}`);
+          });
+      } else {
+        axios
+          .post("http://localhost:3001/posts", {
+            title,
+            body,
+            createdAt: Date.now(), // 현재 시간 가져오기
+            publish
+          })
+          .then(() => {
+            history.push("/admin");
+          });
+      }
     }
   };
 
@@ -78,23 +98,37 @@ const BlogForm = ({ editing }) => {
       <div className="mb-3">
         <label className="form-label">Title</label>
         <input
-          className="form-control"
+          className={classNames('form-control', {'border-danger': titleError})}
           value={title}
           onChange={(event) => {
             setTitle(event.target.value);
           }}
         />
+        {
+          titleError && (
+            <div className="text-danger">
+              Title is required.
+            </div>
+          )
+        }
       </div>
       <div className="mb-3">
         <label className="form-label">Body</label>
         <textarea
-          className="form-control"
+          className={classNames('form-control', {'border-danger': bodyError})}
           value={body}
           onChange={(event) => {
             setBody(event.target.value);
           }}
           rows="10"
         />
+        {
+          bodyError && (
+            <div className="text-danger">
+              Body is required.
+            </div>
+          )
+        }
       </div>
       <div className="form-check mb-3">
         <input
