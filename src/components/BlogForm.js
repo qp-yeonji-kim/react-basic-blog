@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import propTypes from 'prop-types';
 import classNames from "classnames";
+import Toast from "./Toast";
+import { v4 as uuidv4 } from 'uuid';
 
 const BlogForm = ({ editing }) => {
   const history = useHistory();
@@ -16,6 +18,9 @@ const BlogForm = ({ editing }) => {
   const [originalPublish, setOriginalPublish] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
+  // const [toasts, setToasts] = useState([]);
+  const toasts = useRef([]); // 값이 바뀌어도 리랜더링이 일어나지 않는다.
+  const [toastRerender, setToastRerender] = useState(false);
 
   useEffect(() => {
     if (editing) {
@@ -29,6 +34,32 @@ const BlogForm = ({ editing }) => {
       });
     }
   }, [id, editing]);
+
+  const deleteToast = (id) => {
+    const filteredToasts = toasts.current.filter(toast => {
+      return toast.id !== id
+    })
+
+    // setToasts(filteredToasts);
+    toasts.current = filteredToasts;
+    setToastRerender(prev => !prev);
+  }
+  
+  const addToast = (toast) => {
+    const id = uuidv4()
+    const toastWidthId = {
+      ...toast,
+      id // id: id
+    }
+
+    // setToasts(prev=> [...prev, toastWidthId]);
+    toasts.current = [...toasts.current, toastWidthId];
+    setToastRerender(prev => !prev);
+
+    setTimeout(()=>{
+      deleteToast(id);
+    }, 5000)
+  };
 
   const isEdited = () => {
     return title !== originalTitle
@@ -76,6 +107,7 @@ const BlogForm = ({ editing }) => {
           .then((res) => {
             console.log(res);
             history.push(`/blogs/${id}`);
+            addToast();
           });
       } else {
         axios
@@ -86,7 +118,11 @@ const BlogForm = ({ editing }) => {
             publish
           })
           .then(() => {
-            history.push("/admin");
+            // history.push("/admin");
+            addToast({
+              type: 'success',
+              text: 'Successfully Created!'
+            });
           });
       }
     }
@@ -154,6 +190,12 @@ const BlogForm = ({ editing }) => {
       >
         Cancel
       </button>
+
+      <Toast
+        // toasts={toasts}
+        toasts={toasts.current}
+        deleteToast={deleteToast}
+      />
     </div>
   );
 };

@@ -5,7 +5,9 @@ import { useLocation } from 'react-router-dom';
 import LoadingSpinner from "../components/LoadingSpinner";
 import Card from '../components/Card';
 import Pagination from "./Pagination";
+import Toast from "./Toast";
 import propTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
 
 const BlogList = ({ isAdmin }) => {
   const history = useHistory();
@@ -18,6 +20,7 @@ const BlogList = ({ isAdmin }) => {
   const [numberOfPosts, setNumberOfPosts] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [searchText, setSearchText] = useState('');
+  const [toasts, setToasts] = useState([]);
   const limit = 5;
 
   useEffect(() => {
@@ -49,14 +52,41 @@ const BlogList = ({ isAdmin }) => {
   useEffect(() => {
     setCurrentPage(parseInt(pageParam) || 1);
     getPosts(parseInt(pageParam) || 1);
-  }, [])
+  }, []);
+
+  const deleteToast = (id) => {
+    const filteredToasts = toasts.filter(toast => {
+      return toast.id !== id
+    })
+
+    setToasts(filteredToasts);
+  }
+  
+  const addToast = (toast) => {
+    const id = uuidv4()
+    const toastWidthId = {
+      ...toast,
+      id // id: id
+    }
+
+    setToasts(prev=> [...prev, toastWidthId]);
+
+    setTimeout(()=>{
+      deleteToast(id);
+    }, 5000)
+  };
+
 
   const deleteBlog = (e, id) => {
     e.stopPropagation();
     axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
       setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
+      addToast({
+        text: 'Successfully deleted',
+        type: 'success'
+      });
     });
-  }
+  };
 
   const onClickPageButton = (page) => {
     history.push(`${location.pathname}?page=${page}`); // 이전 url 기록이 남게 됨.
@@ -127,6 +157,10 @@ const BlogList = ({ isAdmin }) => {
           }
         </>
       )}
+      <Toast
+        toasts={toasts}
+        deleteToast={deleteToast}
+      />
     </div>
   )
 };
