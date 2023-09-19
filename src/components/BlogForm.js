@@ -1,12 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import propTypes from 'prop-types';
 import classNames from "classnames";
 import Toast from "./Toast";
-import { v4 as uuidv4 } from 'uuid';
+import useToast from '../hooks/toast';
 
 const BlogForm = ({ editing }) => {
+  const [toasts, addToast, deleteToast] = useToast(); // 원하는 것만 가져오되 순서는 지켜야 한다.
   const history = useHistory();
   const { id } = useParams();
 
@@ -18,9 +19,8 @@ const BlogForm = ({ editing }) => {
   const [originalPublish, setOriginalPublish] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
-  // const [toasts, setToasts] = useState([]);
-  const toasts = useRef([]); // 값이 바뀌어도 리랜더링이 일어나지 않는다.
-  const [toastRerender, setToastRerender] = useState(false);
+  // const toasts = useRef([]); // useRef: 리액트 훅, 값이 바뀌어도 리랜더링이 일어나지 않는다.
+  // const [, setToastRerender] = useState(false); // toastRerender라는 변수를 안써줘서 비워놓고 ,를 써놓는다.
 
   useEffect(() => {
     if (editing) {
@@ -34,32 +34,6 @@ const BlogForm = ({ editing }) => {
       });
     }
   }, [id, editing]);
-
-  const deleteToast = (id) => {
-    const filteredToasts = toasts.current.filter(toast => {
-      return toast.id !== id
-    })
-
-    // setToasts(filteredToasts);
-    toasts.current = filteredToasts;
-    setToastRerender(prev => !prev);
-  }
-  
-  const addToast = (toast) => {
-    const id = uuidv4()
-    const toastWidthId = {
-      ...toast,
-      id // id: id
-    }
-
-    // setToasts(prev=> [...prev, toastWidthId]);
-    toasts.current = [...toasts.current, toastWidthId];
-    setToastRerender(prev => !prev);
-
-    setTimeout(()=>{
-      deleteToast(id);
-    }, 5000)
-  };
 
   const isEdited = () => {
     return title !== originalTitle
@@ -192,8 +166,7 @@ const BlogForm = ({ editing }) => {
       </button>
 
       <Toast
-        // toasts={toasts}
-        toasts={toasts.current}
+        toasts={toasts}
         deleteToast={deleteToast}
       />
     </div>
