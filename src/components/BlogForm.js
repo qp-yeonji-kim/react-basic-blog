@@ -3,11 +3,8 @@ import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import propTypes from 'prop-types';
 import classNames from "classnames";
-import Toast from "./Toast";
-import useToast from '../hooks/toast';
 
-const BlogForm = ({ editing }) => {
-  const [toasts, addToast, deleteToast] = useToast(); // 원하는 것만 가져오되 순서는 지켜야 한다.
+const BlogForm = ({ editing, addToast }) => {
   const history = useHistory();
   const { id } = useParams();
 
@@ -19,12 +16,10 @@ const BlogForm = ({ editing }) => {
   const [originalPublish, setOriginalPublish] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
-  // const toasts = useRef([]); // useRef: 리액트 훅, 값이 바뀌어도 리랜더링이 일어나지 않는다.
-  // const [, setToastRerender] = useState(false); // toastRerender라는 변수를 안써줘서 비워놓고 ,를 써놓는다.
 
   useEffect(() => {
     if (editing) {
-      axios.get(`http://localhost:3001/posts/${id}`).then((res) => {
+      axios.get(`http://localhost:3001/posts/${id}`).then(res => {
         setTitle(res.data.title);
         setOriginalTitle(res.data.title);
         setBody(res.data.body);
@@ -45,7 +40,7 @@ const BlogForm = ({ editing }) => {
     if (editing) {
       history.push(`/blogs/${id}`);
     } else {
-      history.push(`/blogs`);
+      history.push('/blogs');
     }
   };
 
@@ -78,25 +73,24 @@ const BlogForm = ({ editing }) => {
             body,
             publish
           })
-          .then((res) => {
+          .then(res => {
             console.log(res);
             history.push(`/blogs/${id}`);
-            addToast();
           });
       } else {
         axios
           .post("http://localhost:3001/posts", {
             title,
             body,
-            createdAt: Date.now(), // 현재 시간 가져오기
+            createdAt: Date.now(),
             publish
           })
           .then(() => {
-            // history.push("/admin");
             addToast({
               type: 'success',
               text: 'Successfully Created!'
             });
+            history.push("/admin");
           });
       }
     }
@@ -164,11 +158,6 @@ const BlogForm = ({ editing }) => {
       >
         Cancel
       </button>
-
-      <Toast
-        toasts={toasts}
-        deleteToast={deleteToast}
-      />
     </div>
   );
 };
