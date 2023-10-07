@@ -7,9 +7,11 @@ import NavBar from './components/NavBar';
 import Toast from './components/Toast'
 import routes from './routes';
 import useToast from './hooks/toast';
+import { useSelector } from 'react-redux';
 
 function App() {
-  const [toasts, addToast, deleteToast] = useToast();
+  const toasts = useSelector(state => state.toast.toasts);
+  const { deleteToast } = useToast();
   return (
     <Router>
       <NavBar />
@@ -20,15 +22,12 @@ function App() {
       <div className="container mt-3">
         <Switch>
           {routes.map((route) => {
-            const Component = route.component;
             return <Route
               exact
               key={route.path}  
               path={route.path}
-              // component={route.component}
-              >
-                <Component addToast={addToast} />
-              </Route>
+              component={route.component}
+              />
           })}
         </Switch>
       </div>

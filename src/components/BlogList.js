@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import LoadingSpinner from "../components/LoadingSpinner";
 import Card from '../components/Card';
 import Pagination from "./Pagination";
-import Toast from "./Toast";
 import propTypes from 'prop-types';
 import useToast from '../hooks/toast';
 
@@ -20,7 +19,7 @@ const BlogList = ({ isAdmin }) => {
   const [numberOfPosts, setNumberOfPosts] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [searchText, setSearchText] = useState('');
-  const [toasts, addToast, deleteToast] = useToast();
+  const {addToast} = useToast();
   const limit = 5;
 
   useEffect(() => {
@@ -134,10 +133,6 @@ const BlogList = ({ isAdmin }) => {
           }
         </>
       )}
-      <Toast
-        toasts={toasts}
-        deleteToast={deleteToast}
-      />
     </div>
   )
 };
