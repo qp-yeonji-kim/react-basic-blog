@@ -6,9 +6,13 @@ const initialState = {
 const toastSlice = createSlice({
   name: 'toast',
   initialState,
-  reducers: { // 함수를 업데이트 하는 함수
-
+  reducers: { // state를 업데이트 해주는 함수가 들어간다.
+    addToasts: (state, action) => {
+      state.toasts.push(action.payload);
+    }
   }
 })
+
+export const { addToasts } = toastSlice.actions;
 
 export default toastSlice.reducer;

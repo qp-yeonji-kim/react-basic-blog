@@ -85,20 +85,6 @@
       "id": 20
     },
     {
-      "title": "12345",
-      "body": "12345",
-      "createdAt": 1694959523677,
-      "publish": false,
-      "id": 21
-    },
-    {
-      "title": "test1",
-      "body": "ㅁㄴㅇㄹ",
-      "createdAt": 1695129061216,
-      "publish": true,
-      "id": 22
-    },
-    {
       "title": "123",
       "body": "123",
       "createdAt": 1695129929636,
