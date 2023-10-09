@@ -3,11 +3,13 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ShowPage = () => {
   const { id } = useParams(); // page 주소 id에 해당되는값
   const [post, setPost] = useState(null); // post는 뭐지?
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
   const getPost = (id) => {
     axios.get(`http://localhost:3001/posts/${id}`).then((res)=>{
@@ -31,12 +33,12 @@ const ShowPage = () => {
     <div>
       <div className="d-flex">
         <h1 className="flex-grow-1">{post.title}</h1>
-        <Link
+        { isLoggedIn && <Link
             className="btn btn-primary"
             to={`/blogs/${id}/edit`}
         >
           Edit
-        </Link>
+        </Link> }
       </div>
       <small className="text-muted">
         Created At: {printDate(post.createdAt)}
