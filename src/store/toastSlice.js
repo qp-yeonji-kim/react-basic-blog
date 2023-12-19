@@ -5,7 +5,7 @@ const initialState = {
 }
 const toastSlice = createSlice({
   name: 'toast',
-  initialState,
+  initialState, // 초기값
   reducers: { // 함수를 업데이트 하는 함수
 
   }

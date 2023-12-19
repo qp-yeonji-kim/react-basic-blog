@@ -23,7 +23,7 @@ const BlogList = ({ isAdmin }) => {
   const [searchText, setSearchText] = useState('');
   const [toasts, addToast, deleteToast] = useToast();
   const limit = 5;
-  const toasts1 = useSelector((state) => {
+  const toasts1 = useSelector((state) => { // redux안의 전체 state를 가져오게 됨.
     return state.toast.toasts // store 안에 등록한 이름으로 불러올 수 있음.
   })
 
