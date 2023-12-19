@@ -1,10 +1,13 @@
 // 커스텀 hooks에서는 useState, useRef를 가져와 쓸 수 있다.
 import { useState, useRef } from "react"
 import { v4 as uuidv4 } from 'uuid';
+import { addToast as add } from '../store/toastSlice';
+import { useDispatch } from 'react-redux';
 
 const useToast = () => { // use를 앞에 붙여 훅이라는 것을 암시.
   const toasts = useRef([]);
   const [, setToastRerender] = useState(false);
+  const dispatch = useDispatch(); // action을 dispatch를 통해 보낸다.
 
   const deleteToast = (id) => {
     const filteredToasts = toasts.current.filter(toast => {
@@ -19,11 +22,12 @@ const useToast = () => { // use를 앞에 붙여 훅이라는 것을 암시.
     const id = uuidv4()
     const toastWidthId = {
       ...toast,
-      id // id: id
+      id
     }
 
-    toasts.current = [...toasts.current, toastWidthId];
-    setToastRerender(prev => !prev);
+    dispatch(add(toastWidthId));
+    // toasts.current = [...toasts.current, toastWidthId];
+    // setToastRerender(prev => !prev);
 
     setTimeout(()=>{
       deleteToast(id, toasts, setToastRerender);
