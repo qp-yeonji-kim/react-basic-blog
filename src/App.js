@@ -13,6 +13,7 @@ import ProtectedRoute from './ProtectedRoute';
 function App() {
   const toasts = useSelector(state => state.toast.toasts);
   const { deleteToast } = useToast();
+  
   return (
     <Router>
       <NavBar />
