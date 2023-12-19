@@ -62,34 +62,6 @@
       "createdAt": 1694955478391,
       "publish": true,
       "id": 17
-    },
-    {
-      "title": "tit2",
-      "body": "111",
-      "createdAt": 1694955509609,
-      "publish": false,
-      "id": 18
-    },
-    {
-      "title": "1title",
-      "body": "1",
-      "createdAt": 1694957914997,
-      "publish": false,
-      "id": 19
-    },
-    {
-      "title": "12345",
-      "body": "12345",
-      "createdAt": 1694959523677,
-      "publish": false,
-      "id": 21
-    },
-    {
-      "title": "test1",
-      "body": "ㅁㄴㅇㄹ",
-      "createdAt": 1695129061216,
-      "publish": true,
-      "id": 22
     }
   ]
 }
