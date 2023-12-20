@@ -31,44 +31,9 @@
     {
       "title": "test2",
       "body": "2",
-      "createdAt": 1694947000844,
-      "publish": false,
-      "id": 11
-    },
-    {
-      "title": "test2",
-      "body": "2",
       "createdAt": 1694947001544,
       "publish": false,
       "id": 12
-    },
-    {
-      "title": "asadf",
-      "body": "asdf",
-      "createdAt": 1694954243925,
-      "publish": false,
-      "id": 14
-    },
-    {
-      "title": "asdf",
-      "body": "asdf",
-      "createdAt": 1694954321170,
-      "publish": false,
-      "id": 15
-    },
-    {
-      "title": "tit1",
-      "body": "tit1",
-      "createdAt": 1694955478391,
-      "publish": true,
-      "id": 17
-    },
-    {
-      "title": "tit2",
-      "body": "111",
-      "createdAt": 1694955509609,
-      "publish": false,
-      "id": 18
     },
     {
       "title": "1title",
@@ -76,20 +41,6 @@
       "createdAt": 1694957914997,
       "publish": false,
       "id": 19
-    },
-    {
-      "title": "12345",
-      "body": "12345",
-      "createdAt": 1694959523677,
-      "publish": false,
-      "id": 21
-    },
-    {
-      "title": "test1",
-      "body": "ㅁㄴㅇㄹ",
-      "createdAt": 1695129061216,
-      "publish": true,
-      "id": 22
     }
   ]
 }
